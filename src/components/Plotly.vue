@@ -17,26 +17,26 @@ export default {
   directives,
   props: {
     data: {
-      type: Array
+      type: Array,
     },
     layout: {
-      type: Object
+      type: Object,
     },
     id: {
       type: String,
       required: false,
-      default: null
-    }
+      default: null,
+    },
   },
   data() {
     return {
       scheduled: null,
-      innerLayout: { ...this.layout }
+      innerLayout: { ...this.layout },
     };
   },
   mounted() {
     Plotly.newPlot(this.$el, this.data, this.innerLayout, this.options);
-    events.forEach(evt => {
+    events.forEach((evt) => {
       this.$el.on(evt.completeName, evt.handler(this));
     });
   },
@@ -45,7 +45,7 @@ export default {
       handler() {
         this.schedule({ replot: true });
       },
-      deep: true
+      deep: true,
     },
     options: {
       handler(value, old) {
@@ -54,12 +54,12 @@ export default {
         }
         this.schedule({ replot: true });
       },
-      deep: true
+      deep: true,
     },
     layout(layout) {
       this.innerLayout = { ...layout };
       this.schedule({ replot: false });
-    }
+    },
   },
   computed: {
     options() {
@@ -69,12 +69,12 @@ export default {
       }, {});
       return {
         responsive: false,
-        ...optionsFromAttrs
+        ...optionsFromAttrs,
       };
-    }
+    },
   },
   beforeDestroy() {
-    events.forEach(event => this.$el.removeAllListeners(event.completeName));
+    events.forEach((event) => this.$el.removeAllListeners(event.completeName));
     Plotly.purge(this.$el);
   },
   methods: {
@@ -91,7 +91,7 @@ export default {
       this.scheduled = context;
       this.$nextTick(() => {
         const {
-          scheduled: { replot }
+          scheduled: { replot },
         } = this;
         this.scheduled = null;
         if (replot) {
@@ -115,12 +115,15 @@ export default {
       return {
         format: "png",
         width: $el.clientWidth,
-        height: $el.clientHeight
+        height: $el.clientHeight,
       };
     },
     react() {
       Plotly.react(this.$el, this.data, this.innerLayout, this.options);
-    }
-  }
+    },
+    animate(data) {
+      Plotly.animate(this.$el, { data: [data] });
+    },
+  },
 };
 </script>
